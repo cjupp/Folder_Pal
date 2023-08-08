@@ -1,13 +1,9 @@
 import os as os
 
-path = r"C:\Users\camer\Desktop\Folder_Pal_Tests"
-prefix_string = "Prefix "
-suffix_string = " Suffix"
-folder_name = ""
-
-subfolders = "Subfolder 1", "Subfolder 2"
-
-folder_count = 0
+#Other indexing ideas:
+# - date
+# - days of week
+# -
 
 
 
@@ -50,25 +46,34 @@ def Get_Index_Alphabetical(number_index, letter_case = 1):
         return "Invalid Number"
 
 
-folder_count = 20
 
-os.chdir(path)
+def Create_Folders(path, number, prefix, suffix, indexing, subfolders):
 
-for i in range(1, folder_count+1):
-    #Create folder name string
-    folder_name = prefix_string + Get_Index_Alphabetical(i) + suffix_string
+    #Change the directory to the given path
+    os.chdir(path)
 
-    #Create folder with that name
-    os.makedirs(folder_name, exist_ok = True)
+    #Repeat for the number of folders given
+    for num in range(1, number + 1):
 
-    #Add subfolders if applicable
-    for folder in subfolders:
-        os.makedirs(folder_name + "/" + folder, exist_ok = True)
+        index = 0
 
+        if indexing == "Numeric":
+            index = str(num)
 
+        elif indexing == "Alphabetic":
+            index = Get_Index_Alphabetical(num)
 
+        else:
+            index = str(num)
 
-#Alphabet test
-#print(Get_Index_Alphabetical(72380))
+        # Create folder name string
+        folder_name = prefix + index + suffix
 
+        # Create folder with that name
+        os.makedirs(folder_name, exist_ok=True)
 
+        # Add subfolders if applicable
+        for folder in subfolders:
+
+            subfolder_path = folder_name + "/" + folder
+            os.makedirs(subfolder_path, exist_ok=True)
