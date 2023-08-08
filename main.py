@@ -11,7 +11,7 @@ folder_count = 0
 
 
 
-
+#Creates an alphabetical numbering system in the format "ABC"
 def Get_Index_Alphabetical(number_index, letter_case = 1):
     return_string = ""
     modulo = 0
