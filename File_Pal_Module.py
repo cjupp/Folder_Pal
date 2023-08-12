@@ -5,7 +5,36 @@ import os as os
 # - days of week
 # -
 
+#the key is the name of the folder, and the data is the same. This allows the pair to be deleted by referencing their name
+dictionary_subfolders = {}
 
+#The key for these dictionary items is the name of the subfolder they are a part of
+#The data is the list of folder names to put in that subfolder
+#When the function to make the sub sub folders is called, use the key and the data together to make a full path for the folder
+dictionary_sub_subfolders = {}
+
+def Add_to_Subfolder_Dict(folder_name):
+    if folder_name in dictionary_subfolders:
+        pass
+
+    else:
+        dictionary_subfolders[folder_name] = folder_name
+
+    print(dictionary_subfolders)
+
+def Add_to_Sub_Subfolder_Dict(parent_folder, folder_name):
+    if parent_folder in dictionary_sub_subfolders:
+        print("Parent exists")
+        dictionary_sub_subfolders[parent_folder].append(folder_name)
+
+
+
+    else:
+        print("Parent does not exist")
+        dictionary_sub_subfolders[parent_folder] = list()
+        dictionary_sub_subfolders[parent_folder].append(folder_name)
+
+    print(dictionary_sub_subfolders)
 
 #Creates an alphabetical numbering system in the format "ABC"
 def Get_Index_Alphabetical(number_index, letter_case = 1):
