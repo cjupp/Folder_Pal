@@ -42,10 +42,10 @@ Created by: Cameron Jupp
 Date:       
 Edited:
 ------------------------------------------------------------------------------------"""
-def Select_Path():
+def Select_Path(stringvar_path):
     path = fd.askdirectory(title='Choose folder root path', initialdir='/')
     print(path)
-    return path
+    stringvar_path.set(path)
 
 #
 def Add_Subfolder(list_widget, entry_widget):
@@ -68,25 +68,17 @@ def Add_Subfolder(list_widget, entry_widget):
     print(fp.dictionary_subfolders)
 
 
-def Delete_Subfolder(list_widget):
+def Delete_Subfolder(subfolder_list_widget, sub_subfolder_list_widget):
     #Get the indexes of selected items
-    selections = list_widget.curselection()
+    folder_name = subfolder_list_widget.get(tk.ACTIVE)
+    list_index = subfolder_list_widget.curselection()
+    subfolder_list_widget.delete(list_index)
 
-    #Create list for names
-    folder_names = list()
+    #Delete the folder from the dictionary
+    fp.Delete_from_Subfolder_Dict(folder_name)
 
-    #Add names to list for every selected index
-    for index in selections:
-        folder_names.append(list_widget.get(index))
-
-    #Delete all items from dictionary based on name
-    for name in folder_names:
-        fp.dictionary_subfolders.pop(name)
-
-    #Delete all items in list based on name
-    for item in reversed(selections):
-        list_widget.delete(item)
-
+    #Remove old values from sub-subfolder listbox
+    Clear_List(sub_subfolder_list_widget)
 
 
 def Add_Sub_Subfolder(subfolder_list_widget, sub_subfolder_list_widget, entry_widget):
@@ -109,39 +101,77 @@ def Add_Sub_Subfolder(subfolder_list_widget, sub_subfolder_list_widget, entry_wi
         Clear_List(sub_subfolder_list_widget)
 
         #Repopulate with update values
-        Populate_Sub_Subfolder_List(parent_folder, sub_subfolder_list_widget)
+        Populate_Sub_Subfolder_List_by_Name(parent_folder, sub_subfolder_list_widget)
 
     print(fp.dictionary_sub_subfolders)
 
 
-def Delete_Sub_Subfolder():
+def Delete_Sub_Subfolder(subfolder_list_widget, sub_subfolder_list_widget):
+    parent_selection_index = subfolder_list_widget.curselection()
+    child_selection_index = sub_subfolder_list_widget.curselection()
 
-    return
+    if parent_selection_index and child_selection_index:
+        parent_folder = subfolder_list_widget.get(parent_selection_index)
+        child_folder = sub_subfolder_list_widget.get(child_selection_index)
+
+        fp.Delete_Child_from_Sub_Subfolder_Dict(parent_folder, child_folder)
+
+        Clear_List(sub_subfolder_list_widget)
+
+        #Clear selection from subfolder list
+        subfolder_list_widget.selection_clear(0, tk.END)
+
+        #Find next item
+
+        Populate_Sub_Subfolder_List_by_Name(parent_folder, sub_subfolder_list_widget)
 
 #Gather all information from the gui and make the folders
-def Execute_Folder_Creation():
-    return
+def Execute_Folder_Creation(path_variable, prefix_entry_widget, suffix_entry_widget, number_spinbox_widget, indexing_variable):
+    #Get all necessary data from GUI interface
+    path = path_variable.get()
+    prefix_string = prefix_entry_widget.get()
+    suffix_string = suffix_entry_widget.get()
+    folder_number = int(number_spinbox_widget.get())
+    indexing_type = indexing_variable.get()
+
+    print("Path: " + path)
+    print("Prefix: " + prefix_string)
+    print("Suffix: " + suffix_string)
+    print("Number: " + str(folder_number))
+    print("Indexing Type: " + indexing_type)
+
+    #Pass it on to module function
+    fp.Create_Folders(path, folder_number, prefix_string, suffix_string, indexing_type)
 
 def Clear_List(list_widget):
-    list_widget.delete(0,tk.END)
+    list_widget.delete(0, tk.END)
 
-def Populate_Sub_Subfolder_List(parent_folder, list_widget):
-    for folder in fp.dictionary_sub_subfolders[parent_folder]:
-        list_widget.insert(tk.END, folder)
+def Populate_Sub_Subfolder_List_by_Name(parent_folder, sub_subfolder_list_widget):
+    Clear_List(sub_subfolder_list_widget)
 
-def Create_Main_Folders():
-    return
+    if parent_folder != '' and parent_folder in fp.dictionary_sub_subfolders:
+            for folder in fp.dictionary_sub_subfolders[parent_folder]:
+                sub_subfolder_list_widget.insert(tk.END, fp.dictionary_sub_subfolders[parent_folder][folder])
 
-def CreateSubfolders():
-    return
 
-def Create_Sub_Subfolder():
-    return
+def Populate_Sub_Subfolder_List_by_Selection(subfolder_list_widget, sub_subfolder_list_widget):
+    Clear_List(sub_subfolder_list_widget)
+    selection_index = subfolder_list_widget.curselection()
+    print(selection_index)
+
+    if selection_index:
+        parent_folder = subfolder_list_widget.get(selection_index)
+
+        if parent_folder != '' and parent_folder in fp.dictionary_sub_subfolders:
+            for folder in fp.dictionary_sub_subfolders[parent_folder]:
+                sub_subfolder_list_widget.insert(tk.END, fp.dictionary_sub_subfolders[parent_folder][folder])
+
 
 def Set_Indexing(Index_String):
     print(Index_String)
 
-
+def Set_Path_Variable(path, path_entry_widget):
+    path.set(path_entry_widget.get())
 
 
 path = 0
@@ -208,14 +238,14 @@ Main_Deco_Frame.pack(side = tk.TOP, expand = "yes", fill = "both", padx = 10, pa
 gui_path = tk.StringVar()
 
 Labelframe_Path = ttk.LabelFrame(Main_Deco_Frame, text="Path", style = "alt.TLabelframe")
-Labelframe_Path.grid(row = 2, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
 
-Button_Choose_Path = ttk.Button(Labelframe_Path, text = "Browse", command=lambda: Select_Path(), style = "alt.TButton")
-Button_Choose_Path.grid(row = 2, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Button_Choose_Path = ttk.Button(Labelframe_Path, text = "Browse", command=lambda: Select_Path(gui_path), style = "alt.TButton")
+Button_Choose_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
 Entry_Path = ttk.Entry(Labelframe_Path, text = "Path name", width = width_subfolder_entry, style = 'alt.TEntry', textvariable = gui_path)
-#Input_Add_Subfolder.bind("<Return>", (lambda event: AngleCodesCommandSend("moveAngle", s_ang_enter, s_ang_dir, e_ang_enter, e_ang_dir)))
-Entry_Path.grid(row = 2, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Entry_Path.bind("<Return>", (lambda event: Set_Path_Variable(gui_path, Entry_Path)))
+Entry_Path.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
 
 #Folder Names ---------------------------------------------------------------------------------------------------------
@@ -274,7 +304,7 @@ Entry_Add_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.NSE
 Button_Add_Subfolder = ttk.Button(Labelframe_Subfolder, text = "Add", command = lambda: Add_Subfolder(Listbox_Subfolders, Entry_Add_Subfolder))
 Button_Add_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
-Listbox_Subfolders = tk.Listbox(Labelframe_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6)
+Listbox_Subfolders = tk.Listbox(Labelframe_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6, exportselection = False)
 Listbox_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
 Scrollbar_Subfolders = tk.Scrollbar(Labelframe_Subfolder)
@@ -283,13 +313,14 @@ Scrollbar_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, padx
 Listbox_Subfolders.config(yscrollcommand= Scrollbar_Subfolders.set)
 Scrollbar_Subfolders.config(command = Listbox_Subfolders.yview)
 
-Listbox_Subfolders.bind('<Delete>', lambda event: Delete_Subfolder(Listbox_Subfolders))
+Listbox_Subfolders.bind('<Delete>', lambda event: Delete_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders))
+Listbox_Subfolders.bind('<<ListboxSelect>>', lambda event: Populate_Sub_Subfolder_List_by_Selection(Listbox_Subfolders, Listbox_Sub_Subfolders))
 
 
 #Sub-Subfolders ---------------------------------------------------------------------------------------------------------
 add_sub_subfolder_name = tk.StringVar()
 
-Labelframe_Sub_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Subfolders")
+Labelframe_Sub_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Sub-Subfolders")
 Labelframe_Sub_Subfolder.grid(row = 3, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
 Entry_Add_Sub_Subfolder = ttk.Entry(Labelframe_Sub_Subfolder, text = "Enter a subfolder name", width = width_subfolder_entry)
@@ -299,7 +330,7 @@ Entry_Add_Sub_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk
 Button_Add_Sub_Subfolder = ttk.Button(Labelframe_Sub_Subfolder, text = "Add", command = lambda: Add_Sub_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders, Entry_Add_Sub_Subfolder))
 Button_Add_Sub_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
-Listbox_Sub_Subfolders = tk.Listbox(Labelframe_Sub_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6)
+Listbox_Sub_Subfolders = tk.Listbox(Labelframe_Sub_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6, exportselection = False)
 Listbox_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
 
 Scrollbar_Sub_Subfolders = tk.Scrollbar(Labelframe_Sub_Subfolder)
@@ -308,10 +339,10 @@ Scrollbar_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, 
 Listbox_Sub_Subfolders.config(yscrollcommand= Scrollbar_Sub_Subfolders.set)
 Scrollbar_Sub_Subfolders.config(command = Listbox_Sub_Subfolders.yview)
 
-#Listbox_Sub_Subfolders.bind('<Delete>', lambda event: Delete_Sub_Subfolder)
+Listbox_Sub_Subfolders.bind('<Delete>', lambda event: Delete_Sub_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders))
 
 #GO Button -------------------------------------------------------------------------------------------------------------
-Button_GO = ttk.Button(Main_Deco_Frame, text = "GO", command = lambda: Execute_Folder_Creation())
+Button_GO = ttk.Button(Main_Deco_Frame, text = "GO", command = lambda: Execute_Folder_Creation(gui_path, Entry_Name_Prefix, Entry_Name_Suffix, Spinbox_Folder_Number, gui_indexing))
 Button_GO.grid(row = 4, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
 
 Main.mainloop()

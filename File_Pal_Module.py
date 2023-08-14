@@ -22,19 +22,31 @@ def Add_to_Subfolder_Dict(folder_name):
 
     print(dictionary_subfolders)
 
+def Delete_from_Subfolder_Dict(folder_name):
+    if folder_name in dictionary_subfolders:
+        dictionary_subfolders.pop(folder_name)
+        Delete_Parent_from_Sub_Subfolder_Dict(folder_name)
+
+
 def Add_to_Sub_Subfolder_Dict(parent_folder, folder_name):
     if parent_folder in dictionary_sub_subfolders:
         print("Parent exists")
-        dictionary_sub_subfolders[parent_folder].append(folder_name)
-
-
 
     else:
         print("Parent does not exist")
-        dictionary_sub_subfolders[parent_folder] = list()
-        dictionary_sub_subfolders[parent_folder].append(folder_name)
+        dictionary_sub_subfolders[parent_folder] = dict()
+
+    dictionary_sub_subfolders[parent_folder][folder_name] = folder_name
 
     print(dictionary_sub_subfolders)
+
+def Delete_Parent_from_Sub_Subfolder_Dict(parent_folder):
+    if parent_folder in dictionary_sub_subfolders:
+        dictionary_sub_subfolders.pop(parent_folder)
+
+def Delete_Child_from_Sub_Subfolder_Dict(parent_folder, folder_name):
+    if folder_name in dictionary_sub_subfolders[parent_folder]:
+        dictionary_sub_subfolders[parent_folder].pop(folder_name)
 
 #Creates an alphabetical numbering system in the format "ABC"
 def Get_Index_Alphabetical(number_index, letter_case = 1):
@@ -76,7 +88,7 @@ def Get_Index_Alphabetical(number_index, letter_case = 1):
 
 
 
-def Create_Folders(path, number, prefix, suffix, indexing, subfolders):
+def Create_Folders(path, number, prefix, suffix, indexing):
 
     #Change the directory to the given path
     os.chdir(path)
@@ -86,23 +98,34 @@ def Create_Folders(path, number, prefix, suffix, indexing, subfolders):
 
         index = 0
 
-        if indexing == "Numeric":
+        if indexing == "Numerical":
             index = str(num)
 
-        elif indexing == "Alphabetic":
+        elif indexing == "Alphabetical":
             index = Get_Index_Alphabetical(num)
 
         else:
             index = str(num)
 
         # Create folder name string
-        folder_name = prefix + index + suffix
+        folder_name = prefix + str(index) + suffix
 
         # Create folder with that name
         os.makedirs(folder_name, exist_ok=True)
 
-        # Add subfolders if applicable
-        for folder in subfolders:
 
-            subfolder_path = folder_name + "/" + folder
+
+        # Add subfolders if applicable
+        for subfolder in dictionary_subfolders:
+            print(subfolder)
+
+            subfolder_path = folder_name + "/" + dictionary_subfolders[subfolder]
             os.makedirs(subfolder_path, exist_ok=True)
+
+            #Add sub-subfolders
+            if subfolder in dictionary_sub_subfolders:
+                for sub_subfolder in dictionary_sub_subfolders[subfolder]:
+                    print(sub_subfolder)
+
+                    sub_subfolder_path = subfolder_path + "/" + sub_subfolder
+                    os.makedirs(sub_subfolder_path, exist_ok=True)
