@@ -197,14 +197,28 @@ color_GO_Button = 'Green'
 
 
 universal_font = "Century Gothic Bold"
-fontsize_labelframes = "12"
-fontsize_listboxes = "12"
-fontsize_entryboxes = "12"
-fontsize_subfolder_buttons = "12"
-fontsize_spinboxes = "12"
-fontsize_GO_Button = "20"
 
-width_subfolder_entry = 12
+fontsize_main_labelframes = 20
+fontsize_labelframes = 12
+fontsize_listboxes = 12
+fontsize_entryboxes = 12
+fontsize_subfolder_buttons = 12
+fontsize_spinboxes = 12
+fontsize_GO_Button = 20
+
+width_subfolder_entry = 22
+width_path_entry = 50
+width_subfolder_button = 2
+width_number_spinbox = 5
+
+padding_x_main_labelframes = 5
+padding_y_main_labelframes = 5
+
+padding_x_sub_labelframes = 5
+padding_y_sub_labelframes = 5
+
+
+text_add_button = "+"
 
 
 
@@ -221,94 +235,94 @@ Main.geometry("750x750")
 Menu_Style = ttk.Style()
 Menu_Style.theme_use('alt')
 Menu_Style.configure('alt.TButton', font = (universal_font))
-Menu_Style.configure('alt.TEntry', font = (universal_font))
-Menu_Style.configure('alt.TLabelframe', font = (universal_font))
+Menu_Style.configure('alt.TEntry', font = (universal_font, fontsize_GO_Button))
+Menu_Style.configure('alt.TLabelframe', font = (universal_font), background = main_background)
 
 
-
-
+Add_Subfolder_Button_Style = Menu_Style
+Add_Subfolder_Button_Style.configure
 #When the window closes, trigger a function to shut everything down and tie up loose ends
 #Main.protocol("WM_DELETE_WINDOW", lambda: Close_Window(Main))
 
-Main_Deco_Frame = tk.LabelFrame(Main)
+Main_Deco_Frame = tk.LabelFrame(Main, bg = main_background)
 Main_Deco_Frame.pack(side = tk.TOP, expand = "yes", fill = "both", padx = 10, pady = 10)
 
 
 #Path ---------------------------------------------------------------------------------------------------------
 gui_path = tk.StringVar()
 
-Labelframe_Path = ttk.LabelFrame(Main_Deco_Frame, text="Path", style = "alt.TLabelframe")
-Labelframe_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Path = ttk.LabelFrame(Main_Deco_Frame, text="Path", style = "mainlabel.TLabelframe")
+Labelframe_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 2, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
-Button_Choose_Path = ttk.Button(Labelframe_Path, text = "Browse", command=lambda: Select_Path(gui_path), style = "alt.TButton")
-Button_Choose_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Button_Choose_Path = ttk.Button(Labelframe_Path, text = "Browse", command=lambda: Select_Path(gui_path))
+Button_Choose_Path.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
-Entry_Path = ttk.Entry(Labelframe_Path, text = "Path name", width = width_subfolder_entry, style = 'alt.TEntry', textvariable = gui_path)
+Entry_Path = ttk.Entry(Labelframe_Path, text = "Path name", width = width_path_entry, style = 'alt.TEntry', textvariable = gui_path)
 Entry_Path.bind("<Return>", (lambda event: Set_Path_Variable(gui_path, Entry_Path)))
-Entry_Path.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Entry_Path.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 
 #Folder Names ---------------------------------------------------------------------------------------------------------
-Labelframe_Folder_Text = ttk.LabelFrame(Main_Deco_Frame, text="Folder Names")
-Labelframe_Folder_Text.grid(row = 2, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Folder_Text = ttk.LabelFrame(Main_Deco_Frame, text="Folder Names", style = "alt.TLabelframe")
+Labelframe_Folder_Text.grid(row = 2, rowspan = 1, column = 1, columnspan = 2, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 #Prefix
 gui_prefix = tk.StringVar()
 
-Labelframe_Name_Prefix = ttk.LabelFrame(Labelframe_Folder_Text, text="Prefix")
-Labelframe_Name_Prefix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Name_Prefix = ttk.LabelFrame(Labelframe_Folder_Text, text="Prefix", style = "alt.TLabelframe")
+Labelframe_Name_Prefix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 Entry_Name_Prefix = ttk.Entry(Labelframe_Name_Prefix, text = "Prefix", width = width_subfolder_entry, font = (universal_font, fontsize_entryboxes), textvariable = gui_prefix)
-Entry_Name_Prefix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Entry_Name_Prefix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 #Suffix
 gui_suffix = tk.StringVar()
 
-Labelframe_Name_Suffix = ttk.LabelFrame(Labelframe_Folder_Text, text="Suffix")
-Labelframe_Name_Suffix.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Name_Suffix = ttk.LabelFrame(Labelframe_Folder_Text, text="Suffix", style = "alt.TLabelframe")
+Labelframe_Name_Suffix.grid(row = 1, rowspan = 1, column = 4, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 Entry_Name_Suffix = ttk.Entry(Labelframe_Name_Suffix, text = "Suffix", width = width_subfolder_entry, font = (universal_font, fontsize_entryboxes), textvariable = gui_suffix)
-Entry_Name_Suffix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Entry_Name_Suffix.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 #Indexing Type
 gui_indexing = tk.StringVar(value = indexing_options[0])
 
-Labelframe_Name_Indexing = ttk.LabelFrame(Labelframe_Folder_Text, text="Indexing")
-Labelframe_Name_Indexing.grid(row = 1, rowspan = 2, column = 3, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Name_Indexing = ttk.LabelFrame(Labelframe_Folder_Text, text="Indexing", style = "alt.TLabelframe")
+Labelframe_Name_Indexing.grid(row = 1, rowspan = 2, column = 3, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 Optionmenu_Indexing = ttk.OptionMenu(Labelframe_Name_Indexing, gui_indexing, *indexing_options, command = lambda event: Set_Indexing(gui_indexing.get()))
-Optionmenu_Indexing.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Optionmenu_Indexing.grid(row = 1, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 #Folder Number
 folder_number = tk.StringVar(value = 1)
 folder_values = 1
 
-Labelframe_Folder_Number = ttk.LabelFrame(Labelframe_Folder_Text, text="Number")
-Labelframe_Folder_Number.grid(row = 1, rowspan = 2, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Folder_Number = ttk.LabelFrame(Labelframe_Folder_Text, text="Number", style = "alt.TLabelframe")
+Labelframe_Folder_Number.grid(row = 1, rowspan = 2, column = 2, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
-Spinbox_Folder_Number = ttk.Spinbox(Labelframe_Folder_Number, from_= 1, to = 999999999, font = (universal_font, fontsize_spinboxes), textvariable = folder_number)
-Spinbox_Folder_Number.grid(row = 1, rowspan = 2, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Spinbox_Folder_Number = ttk.Spinbox(Labelframe_Folder_Number, from_= 1, to = 999999999, width = width_number_spinbox, font = (universal_font, fontsize_spinboxes), textvariable = folder_number)
+Spinbox_Folder_Number.grid(row = 1, rowspan = 2, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 
 
 #Subfolders ---------------------------------------------------------------------------------------------------------
 add_subfolder_name = tk.StringVar()
 
-Labelframe_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Subfolders")
-Labelframe_Subfolder.grid(row = 3, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Subfolders", style = "alt.TLabelframe")
+Labelframe_Subfolder.grid(row = 3, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 Entry_Add_Subfolder = ttk.Entry(Labelframe_Subfolder, text = "Enter a subfolder name", width = width_subfolder_entry, font = (universal_font, fontsize_entryboxes), textvariable = add_subfolder_name)
 Entry_Add_Subfolder.bind("<Return>", lambda event: Add_Subfolder(Listbox_Subfolders, Entry_Add_Subfolder))
-Entry_Add_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.NSEW, pady=0, padx=0)
+Entry_Add_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.NSEW, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes)
 
-Button_Add_Subfolder = ttk.Button(Labelframe_Subfolder, text = "Add", command = lambda: Add_Subfolder(Listbox_Subfolders, Entry_Add_Subfolder))
-Button_Add_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Button_Add_Subfolder = ttk.Button(Labelframe_Subfolder, text = text_add_button, width = width_subfolder_button, command = lambda: Add_Subfolder(Listbox_Subfolders, Entry_Add_Subfolder))
+Button_Add_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Listbox_Subfolders = tk.Listbox(Labelframe_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6, exportselection = False)
-Listbox_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Listbox_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Scrollbar_Subfolders = tk.Scrollbar(Labelframe_Subfolder)
-Scrollbar_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Scrollbar_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Listbox_Subfolders.config(yscrollcommand= Scrollbar_Subfolders.set)
 Scrollbar_Subfolders.config(command = Listbox_Subfolders.yview)
@@ -320,21 +334,21 @@ Listbox_Subfolders.bind('<<ListboxSelect>>', lambda event: Populate_Sub_Subfolde
 #Sub-Subfolders ---------------------------------------------------------------------------------------------------------
 add_sub_subfolder_name = tk.StringVar()
 
-Labelframe_Sub_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Sub-Subfolders")
-Labelframe_Sub_Subfolder.grid(row = 3, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Labelframe_Sub_Subfolder = ttk.LabelFrame(Main_Deco_Frame, text="Sub-Subfolders", style = "alt.TLabelframe")
+Labelframe_Sub_Subfolder.grid(row = 3, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_main_labelframes, pady = padding_y_main_labelframes, sticky = tk.NSEW)
 
 Entry_Add_Sub_Subfolder = ttk.Entry(Labelframe_Sub_Subfolder, text = "Enter a subfolder name", width = width_subfolder_entry)
 Entry_Add_Sub_Subfolder.bind("<Return>", lambda event: Add_Sub_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders, Entry_Add_Sub_Subfolder))
-Entry_Add_Sub_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.NSEW, pady=0, padx=0)
+Entry_Add_Sub_Subfolder.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.NSEW, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes)
 
-Button_Add_Sub_Subfolder = ttk.Button(Labelframe_Sub_Subfolder, text = "Add", command = lambda: Add_Sub_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders, Entry_Add_Sub_Subfolder))
-Button_Add_Sub_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Button_Add_Sub_Subfolder = ttk.Button(Labelframe_Sub_Subfolder, text = text_add_button, width = width_subfolder_button, command = lambda: Add_Sub_Subfolder(Listbox_Subfolders, Listbox_Sub_Subfolders, Entry_Add_Sub_Subfolder))
+Button_Add_Sub_Subfolder.grid(row = 1, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Listbox_Sub_Subfolders = tk.Listbox(Labelframe_Sub_Subfolder, font = (universal_font, fontsize_listboxes), width = 30, height = 6, exportselection = False)
-Listbox_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Listbox_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 1, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Scrollbar_Sub_Subfolders = tk.Scrollbar(Labelframe_Sub_Subfolder)
-Scrollbar_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, padx = 0, pady = 0, sticky = tk.NSEW)
+Scrollbar_Sub_Subfolders.grid(row = 2, rowspan = 1, column = 2, columnspan = 1, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Listbox_Sub_Subfolders.config(yscrollcommand= Scrollbar_Sub_Subfolders.set)
 Scrollbar_Sub_Subfolders.config(command = Listbox_Sub_Subfolders.yview)
@@ -343,7 +357,7 @@ Listbox_Sub_Subfolders.bind('<Delete>', lambda event: Delete_Sub_Subfolder(Listb
 
 #GO Button -------------------------------------------------------------------------------------------------------------
 Button_GO = ttk.Button(Main_Deco_Frame, text = "GO", command = lambda: Execute_Folder_Creation(gui_path, Entry_Name_Prefix, Entry_Name_Suffix, Spinbox_Folder_Number, gui_indexing))
-Button_GO.grid(row = 4, rowspan = 1, column = 1, columnspan = 2, padx = 0, pady = 0, sticky = tk.NSEW)
+Button_GO.grid(row = 4, rowspan = 1, column = 1, columnspan = 2, padx = padding_x_sub_labelframes, pady = padding_y_sub_labelframes, sticky = tk.NSEW)
 
 Main.mainloop()
 
