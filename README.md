@@ -11,7 +11,8 @@ Currently, the program has 2 indexing types:
 
 Future indexing types:
 - Hexadecimal
-- Date
+- Date (Set start date and end date)
+- CSV files for creating unique lists
 
 Planned Additions:
 - Choose start index and end index
